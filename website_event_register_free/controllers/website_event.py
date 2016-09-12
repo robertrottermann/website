@@ -18,11 +18,12 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp import http
-from openerp.addons.website_event.controllers.main import website_event
 
+from openerp.addons.website_event.controllers.main import website_event
+from openerp import http
 
 class WebsiteEvent(website_event):
+
     def _validate(self, name, post, force_check=False):
         if name in post or force_check:
             if name == 'name' and not post.get('name', '').strip():
@@ -37,24 +38,28 @@ class WebsiteEvent(website_event):
 
     @http.route(['/event/<model("event.event"):event>/register/register_free'],
                 type='http', auth="public", website=True)
+
     def event_register_free(self, event, **post):
         def validate(name, force_check=False):
             return self._validate(name, post, force_check=force_check)
 
         reg_obj = http.request.env['event.registration']
-        registration_vals = {}
+        registration_vals={}
+
         if (http.request.env.ref('base.public_user') !=
                 http.request.env.user and
-                validate('tickets', force_check=True)):
+                validate('tickets',force_check=True)):
             # if logged in, use that info
             registration_vals = reg_obj._prepare_registration(
                 event, post, http.request.env.user.id,
                 partner=http.request.env.user.partner_id)
-        if all(map(lambda f: validate(f, force_check=True),
+
+        if all(map(lambda f: validate(f,force_check=True),
                    ['name', 'email', 'tickets'])):
             # otherwise, create a simple registration
             registration_vals = reg_obj._prepare_registration(
                 event, post, http.request.env.user.id)
+
         if registration_vals:
             registration = reg_obj.sudo().create(registration_vals)
             if registration.partner_id:
@@ -64,11 +69,11 @@ class WebsiteEvent(website_event):
                 'website_event_register_free.partner_register_confirm',
                 {'registration': registration})
         values = {
-            'event': event,
-            'range': range,
-            'tickets': post.get('tickets', 1),
-            'validate': validate,
-            'post': post,
+            'event':event,
+            'range':range,
+            'tickets':post.get('tickets', 1),
+            'validate':validate,
+            'post':post,
         }
-        return http.request.render(
-            'website_event_register_free.partner_register_form', values)
+
+        return http.request.render('website_event_register_free.partner_register_form', values)

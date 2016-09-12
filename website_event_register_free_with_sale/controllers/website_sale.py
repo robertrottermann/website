@@ -37,13 +37,13 @@ class WebsiteSale(website_sale):
             for field_name in self.mandatory_free_registration_fields:
                 if not data.get(field_name, '').strip():
                     errors[field_name] = 'missing'
-                elif not WebsiteEvent()._validate(field_name, data, True):
+                elif not WebsiteEvent()._validate(field_name, data,True):
                     # Patch for current free registration implementation
                     errors[field_name] = 'error'
         return errors
 
     @http.route(['/shop/checkout'], type='http', auth="public", website=True)
-    def checkout(self, **post):
+    def checkout(self,**post):
         order = request.website.sale_get_order(force_create=0)
         has_paid_tickets = bool(order.order_line)
         if request.session.get('free_tickets') and not has_paid_tickets:
@@ -67,15 +67,13 @@ class WebsiteSale(website_sale):
             post['tickets'] = request.session['free_tickets']
             event = request.env['event.event'].browse(
                 request.session['event_id'])
-            if (http.request.env.ref('base.public_user') !=
-                    http.request.env.user):
+            if (http.request.env.ref('base.public_user') != http.request.env.user):
                 partner = http.request.env.user.partner_id
             else:
                 partner = False
             # Use same hook as without website_sale
             reg_obj = http.request.env['event.registration']
-            registration_vals = reg_obj._prepare_registration(
-                event, post, http.request.env.user.id, partner=partner)
+            registration_vals = reg_obj._prepare_registration(event, post, http.request.env.user.id, partner=partner)
             registration = reg_obj.sudo().create(registration_vals)
             if registration.partner_id:
                 registration._onchange_partner()
@@ -86,8 +84,7 @@ class WebsiteSale(website_sale):
             return super(WebsiteSale, self).confirm_order(**post)
         elif request.session.get('free_tickets'):
             request.session['free_tickets'] = 0
-            return http.request.render(
-                'website_event_register_free.partner_register_confirm',
+            return http.request.render('website_event_register_free.partner_register_confirm',
                 {'registration': registration})
         else:
             return http.request.redirect('/event')

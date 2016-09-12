@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    This module copyright (C) 2015 Therp BV (<http://therp.nl>).
+#    This module copyright (C) 2015 Therp BV(<http://therp.nl>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -18,8 +18,8 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp import models, api
 
+from openerp import models, api
 
 class IrUiView(models.Model):
     _inherit = 'ir.ui.view'
@@ -30,6 +30,4 @@ class IrUiView(models.Model):
         """inject functions we need in our template"""
         if id_or_xml_id == "website_event.event_description_full":
             values['hasattr'] = hasattr
-        return super(IrUiView, self).render(
-            cr, uid, id_or_xml_id, values=values, engine=engine,
-            context=context)
+        return super(IrUiView, self).render(cr, uid, id_or_xml_id, values=values, engine=engine, context=context)
