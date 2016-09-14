@@ -21,7 +21,7 @@
 {
     "name": "Register for free events - Sale extension",
     "version": "9.0.1.0.0",
-    "author": " KCS "
+    "author": " KCS ",
     "license": "AGPL-3",
     "category": "Website",
     "summary": "Combine free and paid tickets on events",
